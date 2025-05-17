@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6FEFE7B92DD8DDC1006A2EFA /* YouTubeiOSPlayerHelper in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEFE7B82DD8DDC1006A2EFA /* YouTubeiOSPlayerHelper */; };
+		6FEFE7BC2DD8DE45006A2EFA /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEFE7BB2DD8DE45006A2EFA /* SDWebImage */; };
+		6FEFE7BE2DD8DE45006A2EFA /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6FEFE7BD2DD8DE45006A2EFA /* SDWebImageMapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6F8C02FF2DD89AD000B741EC /* SpaceTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FEFE7BC2DD8DE45006A2EFA /* SDWebImage in Frameworks */,
+				6FEFE7BE2DD8DE45006A2EFA /* SDWebImageMapKit in Frameworks */,
+				6FEFE7B92DD8DDC1006A2EFA /* YouTubeiOSPlayerHelper in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +87,9 @@
 			);
 			name = SpaceTest;
 			packageProductDependencies = (
+				6FEFE7B82DD8DDC1006A2EFA /* YouTubeiOSPlayerHelper */,
+				6FEFE7BB2DD8DE45006A2EFA /* SDWebImage */,
+				6FEFE7BD2DD8DE45006A2EFA /* SDWebImageMapKit */,
 			);
 			productName = SpaceTest;
 			productReference = 6F8C02FF2DD89AD000B741EC /* SpaceTest.app */;
@@ -107,6 +119,10 @@
 			);
 			mainGroup = 6F8C02F62DD89AD000B741EC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6FEFE7B72DD8DDC1006A2EFA /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */,
+				6FEFE7BA2DD8DE45006A2EFA /* XCRemoteSwiftPackageReference "SDWebImage" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6F8C03002DD89AD000B741EC /* Products */;
 			projectDirPath = "";
@@ -333,6 +349,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6FEFE7B72DD8DDC1006A2EFA /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/youtube/youtube-ios-player-helper.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.4;
+			};
+		};
+		6FEFE7BA2DD8DE45006A2EFA /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6FEFE7B82DD8DDC1006A2EFA /* YouTubeiOSPlayerHelper */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FEFE7B72DD8DDC1006A2EFA /* XCRemoteSwiftPackageReference "youtube-ios-player-helper" */;
+			productName = YouTubeiOSPlayerHelper;
+		};
+		6FEFE7BB2DD8DE45006A2EFA /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FEFE7BA2DD8DE45006A2EFA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		6FEFE7BD2DD8DE45006A2EFA /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6FEFE7BA2DD8DE45006A2EFA /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6F8C02F72DD89AD000B741EC /* Project object */;
 }

@@ -6,20 +6,25 @@
 //
 
 import Foundation
+import Combine
 
 protocol LaunchListViewModel {
+    var launchList: [LaunchList] { get }
     var title: String { get }
     
     func showLaunchDetailsScreen(id: String)
     func showLaunchFavoritesScreen()
 }
 
-@MainActor
-final class LaunchListViewModelImp: @preconcurrency LaunchListViewModel {
+final class LaunchListViewModelImp: LaunchListViewModel {
+   
+    private(set) var launchList: [LaunchList] = []
     let title: String
     
     private let coordinator: LaunchListCoordinator
     private let networking: LaunchListNetworking
+    
+    weak var delegate: LaunchListViewControllerDelegate?
     
     init(
         coordinator: LaunchListCoordinator,
@@ -30,13 +35,16 @@ final class LaunchListViewModelImp: @preconcurrency LaunchListViewModel {
         
         self.title = "SpaceX"
         
-        getLaunchListData()
+        Task {
+            await getLaunchListData()
+        }
     }
     
-    func getLaunchListData() {
-        Task {
-            try? await networking.getLaunchListData()
-        }
+    func getLaunchListData() async {
+        guard let launchListItems = try? await networking.getLaunchListData() else { return }
+        launchList = launchListItems
+        
+        delegate?.updateLaunchList()
     }
     
     func showLaunchFavoritesScreen() {

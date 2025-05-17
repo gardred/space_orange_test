@@ -8,22 +8,25 @@
 import Foundation
 
 protocol LaunchListNetworking {
-    func getLaunchListData() async throws
+    func getLaunchListData() async throws -> [LaunchList]
 }
 
 final class LaunchListNetworkingImp: LaunchListNetworking {
     
-    func getLaunchListData() async throws {
+    func getLaunchListData() async throws -> [LaunchList] {
         do {
-            let url = URL(string: "https://api.spacexdata.com/v4/launches/latest")!
+            let url = URL(string: "https://api.spacexdata.com/v4/launches/")!
             let (data, response) = try await URLSession.shared.data(from: url)
             
-            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            guard
+                let httpResponse = response as? HTTPURLResponse,
+                httpResponse.statusCode == 200 else {
                 throw URLError(.badServerResponse)
             }
             
-            let decodedData = try JSONDecoder().decode([LaunchList].self, from: data)
-            print(decodedData)
+            let launchList = try JSONDecoder().decode([LaunchList].self, from: data)
+            
+            return launchList
         } catch {
             throw error
         }

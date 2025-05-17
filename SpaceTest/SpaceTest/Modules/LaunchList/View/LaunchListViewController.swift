@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol LaunchListViewControllerDelegate: AnyObject {
+    func updateLaunchList()
+}
+
 public final class LaunchListViewController: UIViewController {
     
     private lazy var tableView = makeTableView()
@@ -30,9 +34,17 @@ public final class LaunchListViewController: UIViewController {
     }
 }
 
+extension LaunchListViewController: LaunchListViewControllerDelegate {
+    func updateLaunchList() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+}
+
 extension LaunchListViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        10
+        viewModel.launchList.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -42,13 +54,17 @@ extension LaunchListViewController: UITableViewDataSource {
                 for: indexPath) as? LaunchListTableViewCell
         else { return UITableViewCell() }
         
+        let launch = viewModel.launchList[indexPath.row]
+        cell.configure(with: launch)
+        
         return cell
     }
 }
 
 extension LaunchListViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.showLaunchDetailsScreen(id: "")
+        let id = viewModel.launchList[indexPath.row].rocket
+        viewModel.showLaunchDetailsScreen(id: id)
     }
 }
 

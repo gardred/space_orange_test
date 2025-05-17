@@ -9,12 +9,13 @@ import UIKit
 
 struct LaunchListBuilder {
     
-    @MainActor
     static func build(with navigationController: UINavigationController) -> LaunchListViewController {
         let coordinator = LaunchListCoordinatorImp(navigationController: navigationController)
         let networking = LaunchListNetworkingImp()
         let viewModel = LaunchListViewModelImp(coordinator: coordinator, networking: networking)
         let viewController = LaunchListViewController(viewModel: viewModel)
+        
+        viewModel.delegate = viewController
         
         return viewController
     }

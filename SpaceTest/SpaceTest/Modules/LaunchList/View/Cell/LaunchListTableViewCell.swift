@@ -28,6 +28,12 @@ final class LaunchListTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func configure(with launch: LaunchList) {
+        titleLabel.text = launch.name
+        dateLabel.text = launch.date.formattedAsLongDate()
+        
+    }
 }
 
 private extension LaunchListTableViewCell {
