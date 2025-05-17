@@ -46,6 +46,12 @@ final class LaunchListViewModelImp: LaunchListViewModel {
     
     func getLaunchListData() async {
         isLoading = true
+        
+        guard NetworkMonitor.shared.isConnected else {
+            coordinator.showNoInternetAlert(title: "Ooooops....", message: "You are not connected to the internet.")
+            return 
+        }
+        
         guard let launchListItems = try? await networking.getLaunchListData() else { return }
         let favoriteIDs = fetchFavoriteLaunches()
         
