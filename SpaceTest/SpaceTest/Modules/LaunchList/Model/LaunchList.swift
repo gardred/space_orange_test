@@ -11,12 +11,14 @@ struct LaunchList: Codable {
     let rocket: String
     let name: String
     let date: String
+    let details: String?
     let links: LaunchListLinks
     
     enum CodingKeys: String, CodingKey {
         case rocket,
              name,
-             links
+             links,
+             details
         case date = "date_utc"
     }
 }

@@ -63,8 +63,8 @@ extension LaunchListViewController: UITableViewDataSource {
 
 extension LaunchListViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let id = viewModel.launchList[indexPath.row].rocket
-        viewModel.showLaunchDetailsScreen(id: id)
+        let launch = viewModel.launchList[indexPath.row]
+        viewModel.showLaunchDetailsScreen(for: launch)
     }
 }
 

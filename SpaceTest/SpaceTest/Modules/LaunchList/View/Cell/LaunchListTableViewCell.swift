@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 final class LaunchListTableViewCell: UITableViewCell {
     
@@ -33,6 +34,9 @@ final class LaunchListTableViewCell: UITableViewCell {
         titleLabel.text = launch.name
         dateLabel.text = launch.date.formattedAsLongDate()
         
+        if let imageURL = launch.links.patch.imageURL {
+            launchImageView.sd_setImage(with: URL(string: imageURL))
+        }
     }
 }
 
@@ -73,9 +77,9 @@ private extension LaunchListTableViewCell {
  
     func makeLaunchImageView() -> UIImageView {
         let imageView = UIImageView()
-        imageView.backgroundColor = .blue
         imageView.layer.cornerRadius = 16
         imageView.layer.borderWidth = 1
+        imageView.contentMode = .scaleAspectFit
         imageView.layer.borderColor = UIColor.white.cgColor
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView

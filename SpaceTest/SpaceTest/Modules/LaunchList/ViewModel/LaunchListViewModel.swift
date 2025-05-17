@@ -12,7 +12,7 @@ protocol LaunchListViewModel {
     var launchList: [LaunchList] { get }
     var title: String { get }
     
-    func showLaunchDetailsScreen(id: String)
+    func showLaunchDetailsScreen(for launch: LaunchList)
     func showLaunchFavoritesScreen()
 }
 
@@ -51,7 +51,7 @@ final class LaunchListViewModelImp: LaunchListViewModel {
         coordinator.showLaunchFavoritesScreen(animated: true)
     }
     
-    func showLaunchDetailsScreen(id: String) {
-        coordinator.showLaunchDetailsScreen(with: id, animated: true)
+    func showLaunchDetailsScreen(for launch: LaunchList) {
+        coordinator.showLaunchDetailsScreen(with: launch, animated: true)
     }
 }

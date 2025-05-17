@@ -9,8 +9,9 @@ import UIKit
 
 struct LaunchDetailsBuilder {
     
-    static func build(with navigationController: UINavigationController) -> LaunchDetailsViewController {
-        let viewController = LaunchDetailsViewController()
+    static func build(with navigationController: UINavigationController, launch: LaunchList) -> LaunchDetailsViewController {
+        let viewModel = LaunchDetailsViewModelImp(launch: launch)
+        let viewController = LaunchDetailsViewController(viewModel: viewModel)
         
         return viewController
     }

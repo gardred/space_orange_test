@@ -9,7 +9,7 @@ import UIKit
 
 protocol LaunchListCoordinator {
     func showLaunchFavoritesScreen(animated: Bool)
-    func showLaunchDetailsScreen(with id: String, animated: Bool)
+    func showLaunchDetailsScreen(with launch: LaunchList, animated: Bool)
 }
 
 final class LaunchListCoordinatorImp: LaunchListCoordinator {
@@ -25,8 +25,8 @@ final class LaunchListCoordinatorImp: LaunchListCoordinator {
         navigationController.pushViewController(viewController, animated: animated)
     }
     
-    func showLaunchDetailsScreen(with id: String, animated: Bool) {
-        let viewController = LaunchDetailsBuilder.build(with: navigationController)
+    func showLaunchDetailsScreen(with launch: LaunchList, animated: Bool) {
+        let viewController = LaunchDetailsBuilder.build(with: navigationController, launch: launch)
         navigationController.pushViewController(viewController, animated: animated)
     }
 }
