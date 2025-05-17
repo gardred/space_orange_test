@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 protocol LaunchDetailsViewModel {
     var launch: LaunchList { get }
     var title: String { get }
