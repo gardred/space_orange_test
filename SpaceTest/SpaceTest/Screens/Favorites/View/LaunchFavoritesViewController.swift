@@ -11,6 +11,17 @@ public final class LaunchFavoritesViewController: UIViewController {
     
     private lazy var tableView = makeTableView()
     
+    private let viewModel: LaunchFavoritesViewModel
+    
+    init(viewModel: LaunchFavoritesViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -19,9 +30,18 @@ public final class LaunchFavoritesViewController: UIViewController {
     }
 }
 
+extension LaunchFavoritesViewController: LaunchListTableViewCellDelegate {
+    func didTapFavoriteButton(_ cell: LaunchListTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        
+        viewModel.removeLaunch(at: indexPath.row)
+        tableView.reloadData()
+    }
+}
+
 extension LaunchFavoritesViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        viewModel.launchFavorites.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -30,6 +50,10 @@ extension LaunchFavoritesViewController: UITableViewDataSource {
                 withIdentifier: LaunchListTableViewCell.identifier,
                 for: indexPath) as? LaunchListTableViewCell
         else { return UITableViewCell() }
+        
+        let launch = viewModel.launchFavorites[indexPath.row]
+        cell.configure(with: launch)
+        cell.delegate = self
         
         return cell
     }
@@ -58,6 +82,7 @@ private extension LaunchFavoritesViewController {
     
     func makeTableView() -> UITableView {
         let tableView = UITableView(frame: .zero)
+        tableView.backgroundColor = .black
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }

@@ -9,20 +9,28 @@ import Foundation
 import Combine
 
 protocol LaunchListViewModel {
-    var launchList: [LaunchList] { get }
+    var launchList: [Launch] { get }
     var title: String { get }
     
-    func showLaunchDetailsScreen(for launch: LaunchList)
+    func getLaunchListData() async
+    func showLaunchDetailsScreen(for launch: Launch)
     func showLaunchFavoritesScreen()
+    func toggleFavoriteState(at index: Int)
 }
 
 final class LaunchListViewModelImp: LaunchListViewModel {
    
-    private(set) var launchList: [LaunchList] = []
+    private(set) var launchList: [Launch] = []
     let title: String
     
     private let coordinator: LaunchListCoordinator
     private let networking: LaunchListNetworking
+    
+    private var isLoading: Bool = false {
+        didSet {
+            delegate?.isLoading(isLoading)
+        }
+    }
     
     weak var delegate: LaunchListViewControllerDelegate?
     
@@ -34,24 +42,66 @@ final class LaunchListViewModelImp: LaunchListViewModel {
         self.networking = networking
         
         self.title = "SpaceX"
-        
-        Task {
-            await getLaunchListData()
-        }
     }
     
     func getLaunchListData() async {
+        isLoading = true
         guard let launchListItems = try? await networking.getLaunchListData() else { return }
-        launchList = launchListItems
+        let favoriteIDs = fetchFavoriteLaunches()
+        
+        launchListItems.forEach { launch in
+            launchList.append(
+                .init(
+                    rocket: launch.rocket,
+                    name: launch.name,
+                    date: launch.date,
+                    details: launch.details,
+                    links: launch.links
+                )
+            )
+        }
+
+        
+        favoriteIDs.forEach { id in
+            if let index = launchList.firstIndex(where: { $0.rocket == id }) {
+                launchList[index].isFavorite = true
+            }
+        }
         
         delegate?.updateLaunchList()
+        isLoading = false
     }
     
     func showLaunchFavoritesScreen() {
-        coordinator.showLaunchFavoritesScreen(animated: true)
+        let favoriteLaunches = launchList.filter { $0.isFavorite == true }
+        coordinator.showLaunchFavoritesScreen(with: favoriteLaunches, animated: true)
     }
     
-    func showLaunchDetailsScreen(for launch: LaunchList) {
+    func showLaunchDetailsScreen(for launch: Launch) {
         coordinator.showLaunchDetailsScreen(with: launch, animated: true)
+    }
+    
+    func toggleFavoriteState(at index: Int) {
+        let launch = launchList[index]
+        
+        if launch.isFavorite {
+            CoreDataManager.shared.removeLaunch(by: launch.rocket)
+        } else {
+            CoreDataManager.shared.add(launch)
+        }
+        
+        launchList[index].isFavorite.toggle()
+        
+        delegate?.updateLaunchList()
+    }
+}
+
+private extension LaunchListViewModelImp {
+    
+    func fetchFavoriteLaunches() -> [String] {
+        let data = CoreDataManager.shared.getAllLaunches()
+        let ids = data.compactMap { $0.id }
+        
+        return ids
     }
 }

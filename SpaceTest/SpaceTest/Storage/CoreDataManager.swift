@@ -14,8 +14,12 @@ final class CoreDataManager {
     private init() { }
     
     private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "")
-        
+        let container = NSPersistentContainer(name: "LaunchFavorites")
+        container.loadPersistentStores { _, error in
+            if let error = error {
+                fatalError("Unresolved error \(error)")
+            }
+        }
         return container
     }()
     
@@ -38,15 +42,31 @@ final class CoreDataManager {
         saveContext()
     }
     
-    func fetch<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor]? = nil) -> [T] {
-         let request = T.fetchRequest()
-         request.predicate = predicate
-         request.sortDescriptors = sortDescriptors
+    func add(_ launch: Launch) {
+        let storage = Favorites(context: context)
+        storage.id = launch.rocket
+        saveContext()
+    }
+    
+    func removeLaunch(by id: String) {
+        let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id)
 
-         do {
-             return try context.fetch(request) as? [T] ?? []
-         } catch {
-             return []
-         }
-     }
+        do {
+            if let launch = try context.fetch(request).first {
+                delete(launch)
+            }
+        } catch {
+            print("Failed to delete launch with id \(id): \(error)")
+        }
+    }
+    
+    func getAllLaunches() -> [Favorites] {
+          let request: NSFetchRequest<Favorites> = Favorites.fetchRequest()
+          do {
+              return try context.fetch(request)
+          } catch {
+              return []
+          }
+      }
 }

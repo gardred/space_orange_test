@@ -8,15 +8,15 @@
 import Foundation
 
 protocol LaunchDetailsViewModel {
-    var launch: LaunchList { get }
+    var launch: Launch { get }
     var title: String { get }
 }
 
 final class LaunchDetailsViewModelImp: LaunchDetailsViewModel {
-    let launch: LaunchList
+    let launch: Launch
     let title: String
     
-    init(launch: LaunchList) {
+    init(launch: Launch) {
         self.launch = launch
         self.title = launch.name
     }

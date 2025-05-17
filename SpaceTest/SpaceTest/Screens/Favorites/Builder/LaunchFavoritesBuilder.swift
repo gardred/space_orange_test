@@ -9,8 +9,9 @@ import Foundation
 
 struct LaunchFavoritesBuilder {
     
-    static func build() -> LaunchFavoritesViewController {
-        let viewController = LaunchFavoritesViewController()
+    static func build(with favoriteLaunches: [Launch]) -> LaunchFavoritesViewController {
+        let viewModel = LaunchFavoritesViewModelImp(launchFavorites: favoriteLaunches)
+        let viewController = LaunchFavoritesViewController(viewModel: viewModel)
         
         return viewController
     }

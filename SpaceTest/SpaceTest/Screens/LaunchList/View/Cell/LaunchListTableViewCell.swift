@@ -8,6 +8,10 @@
 import UIKit
 import SDWebImage
 
+protocol LaunchListTableViewCellDelegate: AnyObject {
+    func didTapFavoriteButton(_ cell: LaunchListTableViewCell)
+}
+
 final class LaunchListTableViewCell: UITableViewCell {
     
     static var identifier: String {
@@ -19,10 +23,13 @@ final class LaunchListTableViewCell: UITableViewCell {
     private lazy var dateLabel = makeDateLabel()
     private lazy var favoriteButton = makeFavoriteButton()
     
+    weak var delegate: LaunchListTableViewCellDelegate?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         setupUI()
+        setupActions()
         configureConstraints()
     }
     
@@ -30,13 +37,16 @@ final class LaunchListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with launch: LaunchList) {
+    func configure(with launch: Launch) {
         titleLabel.text = launch.name
         dateLabel.text = launch.date.formattedAsLongDate()
         
         if let imageURL = launch.links.patch.imageURL {
             launchImageView.sd_setImage(with: URL(string: imageURL))
         }
+        
+        let image = launch.isFavorite ? "heart.fill" : "heart"
+        favoriteButton.setImage(UIImage(systemName: image), for: .normal)
     }
 }
 
@@ -51,6 +61,15 @@ private extension LaunchListTableViewCell {
         addSubview(titleLabel)
         addSubview(dateLabel)
         addSubview(favoriteButton)
+    }
+    
+    func setupActions() {
+        let favoriteButtonAction = UIAction { [weak self] _ in
+            guard let self else { return }
+            delegate?.didTapFavoriteButton(self)
+        }
+        
+        favoriteButton.addAction(favoriteButtonAction, for: .touchUpInside)
     }
     
     func configureConstraints() {

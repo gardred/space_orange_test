@@ -8,8 +8,8 @@
 import UIKit
 
 protocol LaunchListCoordinator {
-    func showLaunchFavoritesScreen(animated: Bool)
-    func showLaunchDetailsScreen(with launch: LaunchList, animated: Bool)
+    func showLaunchFavoritesScreen(with favoriteLaunches: [Launch], animated: Bool)
+    func showLaunchDetailsScreen(with launch: Launch, animated: Bool)
 }
 
 final class LaunchListCoordinatorImp: LaunchListCoordinator {
@@ -20,12 +20,12 @@ final class LaunchListCoordinatorImp: LaunchListCoordinator {
         self.navigationController = navigationController
     }
     
-    func showLaunchFavoritesScreen(animated: Bool) {
-        let viewController = LaunchFavoritesBuilder.build()
+    func showLaunchFavoritesScreen(with favoriteLaunches: [Launch], animated: Bool) {
+        let viewController = LaunchFavoritesBuilder.build(with: favoriteLaunches)
         navigationController.pushViewController(viewController, animated: animated)
     }
     
-    func showLaunchDetailsScreen(with launch: LaunchList, animated: Bool) {
+    func showLaunchDetailsScreen(with launch: Launch, animated: Bool) {
         let viewController = LaunchDetailsBuilder.build(with: navigationController, launch: launch)
         navigationController.pushViewController(viewController, animated: animated)
     }

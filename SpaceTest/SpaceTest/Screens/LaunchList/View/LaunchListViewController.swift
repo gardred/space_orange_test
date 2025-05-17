@@ -8,12 +8,14 @@
 import UIKit
 
 protocol LaunchListViewControllerDelegate: AnyObject {
+    func isLoading(_ loading: Bool)
     func updateLaunchList()
 }
 
 public final class LaunchListViewController: UIViewController {
     
     private lazy var tableView = makeTableView()
+    private lazy var activityIndicator = makeActivityIndicator()
     
     private let viewModel: LaunchListViewModel
     
@@ -24,6 +26,14 @@ public final class LaunchListViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        Task {
+            await viewModel.getLaunchListData()
+        }
     }
     
     public override func viewDidLoad() {
@@ -39,6 +49,22 @@ extension LaunchListViewController: LaunchListViewControllerDelegate {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+    }
+    
+    func isLoading(_ loading: Bool) {
+        DispatchQueue.main.async {
+            self.tableView.alpha = loading ? 0.5 : 1.0
+            loading
+            ? self.activityIndicator.startAnimating()
+            : self.activityIndicator.stopAnimating()
+        }
+    }
+}
+
+extension LaunchListViewController: LaunchListTableViewCellDelegate {
+    func didTapFavoriteButton(_ cell: LaunchListTableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        viewModel.toggleFavoriteState(at: indexPath.row)
     }
 }
 
@@ -56,6 +82,7 @@ extension LaunchListViewController: UITableViewDataSource {
         
         let launch = viewModel.launchList[indexPath.row]
         cell.configure(with: launch)
+        cell.delegate = self
         
         return cell
     }
@@ -82,6 +109,7 @@ private extension LaunchListViewController {
         
         view.backgroundColor = .white
         view.addSubview(tableView)
+        view.addSubview(activityIndicator)
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -96,7 +124,10 @@ private extension LaunchListViewController {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -105,6 +136,14 @@ private extension LaunchListViewController {
         tableView.backgroundColor = .black
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }
+    
+    func makeActivityIndicator() -> UIActivityIndicatorView {
+        let view = UIActivityIndicatorView(style: .large)
+        view.tintColor = .white
+        view.hidesWhenStopped = true
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }
     
     @objc func didTapHeartButton() {

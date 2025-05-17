@@ -39,10 +39,10 @@ final class LaunchDetailsTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with details: LaunchList) {
+    func configure(with details: Launch) {
         let videoID = details.links.youtubeID ?? ""
         youtubePlayerView.load(withVideoId: videoID)
-        dateLabel.text = details.date
+        dateLabel.text = details.date.formattedAsLongDate()
         descriptionLabel.text = details.details
         rocketName.text = "Rocket name: \(details.name)"
         massLabel.text = "Payload mass: "
