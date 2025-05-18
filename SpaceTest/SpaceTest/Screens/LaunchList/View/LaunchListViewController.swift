@@ -23,11 +23,6 @@ public final class LaunchListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
-    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
