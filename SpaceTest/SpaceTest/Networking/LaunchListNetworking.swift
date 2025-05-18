@@ -14,23 +14,17 @@ protocol LaunchListNetworking {
 final class LaunchListNetworkingImp: LaunchListNetworking {
     
     func getLaunchListData() async throws -> [LaunchList] {
-        do {
-            let url = URL(string: "https://api.spacexdata.com/v4/launches/")!
-            let (data, response) = try await URLSession.shared.data(from: url)
-            
-            guard
-                let httpResponse = response as? HTTPURLResponse,
-                httpResponse.statusCode == 200 else {
-                throw URLError(.badServerResponse)
-            }
-            
-            let launchList = try JSONDecoder().decode([LaunchList].self, from: data)
-            
-            return launchList
-        } catch {
-            throw error
+        let url = URL(string: NetworkingURL.launches.path)!
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard
+            let httpResponse = response as? HTTPURLResponse,
+            httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
         }
+        
+        let launchList = try JSONDecoder().decode([LaunchList].self, from: data)
+        
+        return launchList
     }
-    
-    
 }

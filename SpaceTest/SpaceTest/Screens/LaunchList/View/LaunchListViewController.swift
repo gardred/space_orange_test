@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol LaunchListViewControllerDelegate: AnyObject {
-    func isLoading(_ loading: Bool)
-    func updateLaunchList()
-}
-
 public final class LaunchListViewController: UIViewController {
     
     private lazy var tableView = makeTableView()
@@ -31,33 +26,14 @@ public final class LaunchListViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        Task {
-            await viewModel.getLaunchListData()
-        }
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+        setupBindings()
         configureConstraints()
-    }
-}
-
-extension LaunchListViewController: LaunchListViewControllerDelegate {
-    func updateLaunchList() {
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-    }
-    
-    func isLoading(_ loading: Bool) {
-        DispatchQueue.main.async {
-            self.tableView.alpha = loading ? 0.5 : 1.0
-            loading
-            ? self.activityIndicator.startAnimating()
-            : self.activityIndicator.stopAnimating()
-        }
     }
 }
 
@@ -70,7 +46,7 @@ extension LaunchListViewController: LaunchListTableViewCellDelegate {
 
 extension LaunchListViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.launchList.count
+        viewModel.launchList.value.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -80,8 +56,10 @@ extension LaunchListViewController: UITableViewDataSource {
                 for: indexPath) as? LaunchListTableViewCell
         else { return UITableViewCell() }
         
-        let launch = viewModel.launchList[indexPath.row]
-        cell.configure(with: launch)
+        if let launch = viewModel.launch(at: indexPath.row) {
+            cell.configure(with: launch)
+        }
+        
         cell.delegate = self
         
         return cell
@@ -90,8 +68,8 @@ extension LaunchListViewController: UITableViewDataSource {
 
 extension LaunchListViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let launch = viewModel.launchList[indexPath.row]
-        viewModel.showLaunchDetailsScreen(for: launch)
+        let launch = viewModel.launchList.value[indexPath.row]
+        viewModel.didTapLaunch(launch)
     }
 }
 
@@ -146,7 +124,24 @@ private extension LaunchListViewController {
         return view
     }
     
+    func setupBindings() {
+        viewModel.isLoading.bind { [weak self] isLoading in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+                isLoading
+                ? self?.activityIndicator.startAnimating()
+                : self?.activityIndicator.stopAnimating()
+            }
+        }
+        
+        viewModel.launchList.bind { [weak self] items in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }
+    }
+    
     @objc func didTapHeartButton() {
-        viewModel.showLaunchFavoritesScreen()
+        viewModel.didTapFavorites()
     }
 }

@@ -15,8 +15,6 @@ struct LaunchListBuilder {
         let viewModel = LaunchListViewModelImp(coordinator: coordinator, networking: networking)
         let viewController = LaunchListViewController(viewModel: viewModel)
         
-        viewModel.delegate = viewController
-        
         return viewController
     }
 }

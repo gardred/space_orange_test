@@ -21,20 +21,53 @@ final class LaunchListCoordinatorImp: LaunchListCoordinator {
         self.navigationController = navigationController
     }
     
-    func showLaunchFavoritesScreen(with favoriteLaunches: [Launch], animated: Bool) {
+    func showLaunchFavoritesScreen(
+        with favoriteLaunches: [Launch],
+        animated: Bool
+    ) {
         let viewController = LaunchFavoritesBuilder.build(with: favoriteLaunches)
-        navigationController.pushViewController(viewController, animated: animated)
+        navigationController.pushViewController(
+            viewController,
+            animated: animated
+        )
     }
     
-    func showLaunchDetailsScreen(with launch: Launch, animated: Bool) {
-        let viewController = LaunchDetailsBuilder.build(with: navigationController, launch: launch)
-        navigationController.pushViewController(viewController, animated: animated)
+    func showLaunchDetailsScreen(
+        with launch: Launch,
+        animated: Bool
+    ) {
+        let viewController = LaunchDetailsBuilder.build(
+            with: navigationController,
+            launch: launch
+        )
+        navigationController.pushViewController(
+            viewController,
+            animated: animated
+        )
     }
     
-    func showNoInternetAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let cancelAction = alert.addAction(.init(title: "Cancel", style: .cancel))
+    func showNoInternetAlert(
+        title: String,
+        message: String
+    ) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
         
-        navigationController.present(alert, animated: true)
+        alert.addAction(
+            .init(
+                title: "Cancel",
+                style: .cancel
+            )
+        )
+        
+        DispatchQueue.main.async {
+            self.navigationController.present(
+                alert,
+                animated: true
+            )
+        }
     }
 }

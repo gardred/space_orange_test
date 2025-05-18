@@ -5,7 +5,6 @@
 //  Created by M1 Pro on 17.05.2025.
 //
 
-import Foundation
 import Network
 
 class NetworkMonitor {
@@ -14,7 +13,7 @@ class NetworkMonitor {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
 
-    private(set) var isConnected: Bool = false
+    private(set) var isConnected: Bool = true
     private(set) var connectionType: ConnectionType = .unknown
 
     enum ConnectionType {
@@ -26,9 +25,9 @@ class NetworkMonitor {
 
     private init() {
         monitor.pathUpdateHandler = { [weak self] path in
-            self?.isConnected = path.status == .satisfied
+            let connected = path.status != .satisfied
+            self?.isConnected = connected
             self?.determineConnectionType(path)
-            print("Network status changed. Connected: \(self?.isConnected ?? false)")
         }
         monitor.start(queue: queue)
     }
@@ -45,3 +44,4 @@ class NetworkMonitor {
         }
     }
 }
+

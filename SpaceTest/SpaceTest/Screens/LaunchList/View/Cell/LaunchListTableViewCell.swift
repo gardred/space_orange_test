@@ -14,10 +14,6 @@ protocol LaunchListTableViewCellDelegate: AnyObject {
 
 final class LaunchListTableViewCell: UITableViewCell {
     
-    static var identifier: String {
-        String(describing: self)
-    }
-    
     private lazy var launchImageView = makeLaunchImageView()
     private lazy var titleLabel = makeTitleLabel()
     private lazy var dateLabel = makeDateLabel()

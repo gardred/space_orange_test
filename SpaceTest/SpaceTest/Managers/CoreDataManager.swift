@@ -66,6 +66,7 @@ final class CoreDataManager {
           do {
               return try context.fetch(request)
           } catch {
+              print("Failed to get launches: \(error)")
               return []
           }
       }
